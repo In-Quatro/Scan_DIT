@@ -230,7 +230,7 @@ class MainWindow(QMainWindow):
         finally:
             self.populate_table()
 
-    def fill_scan(self, url, test):
+    def fill_scan(self, url):
         """Внесение данных для сканирования."""
         try:
             if self.is_status_code():
@@ -275,14 +275,9 @@ class MainWindow(QMainWindow):
                 pref.clear()
                 pref.send_keys(self.le_pref.text())
 
-                if test:
-                    save = driver.find_element(By.ID, 'SaveTest_button')
-                    save.click()
-                    self.save_and_test_button()
-                else:
-                    save = driver.find_element(By.ID, 'Save_button')
-                    save.click()
-                    self.save_button()
+                save = driver.find_element(By.ID, 'Save_button')
+                save.click()
+                self.save_button()
         except Exception as e:
             print(e)
 
