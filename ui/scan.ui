@@ -7,11 +7,29 @@
     <x>0</x>
     <y>0</y>
     <width>660</width>
-    <height>385</height>
+    <height>380</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>660</width>
+    <height>380</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>660</width>
+    <height>380</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Настройка сканирования</string>
   </property>
   <property name="animated">
    <bool>true</bool>
@@ -37,7 +55,7 @@
       <property name="geometry">
        <rect>
         <x>90</x>
-        <y>70</y>
+        <y>100</y>
         <width>113</width>
         <height>20</height>
        </rect>
@@ -60,7 +78,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>72</y>
+        <y>102</y>
         <width>41</width>
         <height>16</height>
        </rect>
@@ -93,7 +111,7 @@
       <property name="geometry">
        <rect>
         <x>90</x>
-        <y>100</y>
+        <y>130</y>
         <width>113</width>
         <height>20</height>
        </rect>
@@ -191,17 +209,27 @@
      <widget class="QPushButton" name="b_test">
       <property name="geometry">
        <rect>
-        <x>131</x>
-        <y>130</y>
-        <width>119</width>
-        <height>23</height>
+        <x>232</x>
+        <y>160</y>
+        <width>22</width>
+        <height>22</height>
        </rect>
       </property>
+      <property name="cursor">
+       <cursorShape>ArrowCursor</cursorShape>
+      </property>
+      <property name="toolTip">
+       <string>Проверить запись</string>
+      </property>
       <property name="text">
-       <string>Проверить</string>
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/icon_check.png</normaloff>icons/icon_check.png</iconset>
       </property>
      </widget>
-     <widget class="QLineEdit" name="le_username">
+     <widget class="QLineEdit" name="le_name">
       <property name="geometry">
        <rect>
         <x>90</x>
@@ -228,7 +256,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>102</y>
+        <y>132</y>
         <width>51</width>
         <height>16</height>
        </rect>
@@ -237,30 +265,40 @@
        <string>Hostname</string>
       </property>
      </widget>
-     <widget class="QLabel" name="l_username">
+     <widget class="QLabel" name="l_name">
       <property name="geometry">
        <rect>
         <x>10</x>
         <y>42</y>
-        <width>51</width>
+        <width>71</width>
         <height>16</height>
        </rect>
       </property>
       <property name="text">
-       <string>Имя</string>
+       <string>Отобр. имя</string>
       </property>
      </widget>
      <widget class="QPushButton" name="b_save">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>130</y>
-        <width>119</width>
-        <height>23</height>
+        <x>207</x>
+        <y>160</y>
+        <width>22</width>
+        <height>22</height>
        </rect>
       </property>
+      <property name="toolTip">
+       <string>Создать новую запись</string>
+      </property>
+      <property name="whatsThis">
+       <string/>
+      </property>
       <property name="text">
-       <string>Сохранить</string>
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/icon_create.png</normaloff>icons/icon_create.png</iconset>
       </property>
      </widget>
      <widget class="QComboBox" name="cb_size">
@@ -335,8 +373,8 @@
        <rect>
         <x>207</x>
         <y>10</y>
-        <width>20</width>
-        <height>20</height>
+        <width>22</width>
+        <height>22</height>
        </rect>
       </property>
       <property name="text">
@@ -354,9 +392,9 @@
       <property name="geometry">
        <rect>
         <x>207</x>
-        <y>70</y>
-        <width>20</width>
-        <height>20</height>
+        <y>100</y>
+        <width>22</width>
+        <height>22</height>
        </rect>
       </property>
       <property name="text">
@@ -373,10 +411,10 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>230</x>
-        <y>70</y>
-        <width>20</width>
-        <height>20</height>
+        <x>232</x>
+        <y>100</y>
+        <width>22</width>
+        <height>22</height>
        </rect>
       </property>
       <property name="text">
@@ -387,7 +425,7 @@
         <normaloff>icons/icon_copy.png</normaloff>icons/icon_copy.png</iconset>
       </property>
      </widget>
-     <widget class="QPushButton" name="b_clear_le_username">
+     <widget class="QPushButton" name="b_clear_le_name">
       <property name="enabled">
        <bool>true</bool>
       </property>
@@ -395,8 +433,8 @@
        <rect>
         <x>207</x>
         <y>40</y>
-        <width>20</width>
-        <height>20</height>
+        <width>22</width>
+        <height>22</height>
        </rect>
       </property>
       <property name="text">
@@ -414,9 +452,9 @@
       <property name="geometry">
        <rect>
         <x>207</x>
-        <y>100</y>
-        <width>20</width>
-        <height>20</height>
+        <y>130</y>
+        <width>22</width>
+        <height>22</height>
        </rect>
       </property>
       <property name="text">
@@ -433,10 +471,10 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>230</x>
-        <y>100</y>
-        <width>20</width>
-        <height>20</height>
+        <x>232</x>
+        <y>130</y>
+        <width>22</width>
+        <height>22</height>
        </rect>
       </property>
       <property name="text">
@@ -452,12 +490,12 @@
        <rect>
         <x>10</x>
         <y>160</y>
-        <width>241</width>
+        <width>194</width>
         <height>23</height>
        </rect>
       </property>
       <property name="text">
-       <string>Проверить настройки сканирования</string>
+       <string>Посмотреть записи</string>
       </property>
      </widget>
      <widget class="QTableWidget" name="t_scan">
@@ -527,7 +565,7 @@
        <number>39</number>
       </attribute>
       <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>300</number>
+       <number>500</number>
       </attribute>
       <attribute name="horizontalHeaderHighlightSections">
        <bool>true</bool>
@@ -615,10 +653,10 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>408</x>
+        <x>410</x>
         <y>160</y>
-        <width>20</width>
-        <height>20</height>
+        <width>22</width>
+        <height>22</height>
        </rect>
       </property>
       <property name="text">
@@ -635,10 +673,10 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>385</x>
+        <x>382</x>
         <y>160</y>
-        <width>20</width>
-        <height>20</height>
+        <width>22</width>
+        <height>22</height>
        </rect>
       </property>
       <property name="text">
@@ -655,10 +693,10 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>430</x>
+        <x>440</x>
         <y>160</y>
-        <width>20</width>
-        <height>20</height>
+        <width>22</width>
+        <height>22</height>
        </rect>
       </property>
       <property name="text">
@@ -690,6 +728,49 @@
       </property>
       <property name="text">
        <string>Очистить все поля</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="le_username">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>70</y>
+        <width>113</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="l_username">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>72</y>
+        <width>71</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Username</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="b_clear_le_username">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>207</x>
+        <y>70</y>
+        <width>22</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/icon_delete.png</normaloff>icons/icon_delete.png</iconset>
       </property>
      </widget>
     </widget>

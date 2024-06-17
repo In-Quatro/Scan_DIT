@@ -1,34 +1,46 @@
 import os
 import re
 import time
-from pprint import pprint
+from pysnmp.hlapi import *
 from bs4 import BeautifulSoup
 import requests
-from dotenv import load_dotenv
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.support.ui import WebDriverWait
+
 from selenium.webdriver.support import expected_conditions as EC
 
 import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QDialog
-from PyQt5 import uic
+from PyQt5 import uic, QtGui
 
+# Без привязки к версии
+# driver_options = webdriver.ChromeOptions()
+# driver_options.add_argument("--headless")
+# driver = webdriver.Chrome(options=driver_options)
 
-driver_options = webdriver.EdgeOptions()
-# driver = webdriver.Edge()
+#
+driver_options = Options()
 driver_options.add_argument("--headless")
-driver = webdriver.Edge(options=driver_options)
+driver_options.add_argument("--disable-blink-features=AutomationControlled")
+
+# Отключение автоматической проверки веб-драйвера
+service = Service(executable_path="webdriver/chromedriver.exe")
+
+# Создание экземпляра веб-драйвера Chrome с отключенной проверкой
+driver = webdriver.Chrome(service=service, options=driver_options)
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        uic.loadUi('scan.ui', self)
-
+        uic.loadUi(r'ui\scan.ui', self)
+        self.setWindowIcon(QtGui.QIcon(r'ui\icons\logo.ico'))
+        self.t_scan.setColumnWidth(0, 170)
         self.b_clr_le_ip_prn.clicked.connect(self.le_ip_prn.clear)
         self.b_clear_le_username.clicked.connect(self.le_username.clear)
         self.b_clr_le_ip_arm.clicked.connect(self.le_ip_arm.clear)
@@ -37,11 +49,10 @@ class MainWindow(QMainWindow):
         self.b_test.clicked.connect(self.test_scan)
         self.b_del_scan.clicked.connect(self.delete_scan)
         self.b_edit_scan.clicked.connect(self.edit_scan)
-        # self.b_edit_scan.setContextMenuPolicy(Qt.CustomContextMenu)
-        # self.b_edit_scan.customContextMenuRequested.connect(lambda: self.edit_scan(True))
         self.b_new_window.clicked.connect(self.open_dialog)
-        self.b_copy_host_path.clicked.connect(self.send_clipboard_hostname)
+        self.b_copy_host_path.clicked.connect(self.send_clipboard_name)
         self.b_copy_ip_path.clicked.connect(self.send_clipboard_ip_arm)
+        self.b_clear_le_name.clicked.connect(self.le_name.clear)
         self.b_clr_hostname.clicked.connect(self.le_hostname.clear)
         self.b_clear_all.clicked.connect(self.clear_all)
 
@@ -59,8 +70,8 @@ class MainWindow(QMainWindow):
                                        f'"{num}", это займет 15 секунд')
                     time.sleep(15)
                     msg = driver.find_element(By.ID, "alertText")
-                    text_msg = msg.text
-                    self.update_status(text_msg.strip('\n')[:84])
+                    text_msg = msg.text.strip('\n')[:84]
+                    self.update_status(text_msg)
                 except Exception as e:
                     print(e)
                     self.populate_table()
@@ -71,14 +82,41 @@ class MainWindow(QMainWindow):
                 self.update_status('Необходимо указать запись '
                                    'для проверки')
 
+    def is_printer(self, ip):
+        """Проверка IP на принтер."""
+        try:
+            errorIndication, errorStatus, errorIndex, varBinds = next(
+                getCmd(SnmpEngine(),
+                       CommunityData('public'),
+                       UdpTransportTarget((ip, 161)),
+                       ContextData(),
+                       ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0)))
+            )
+
+            if errorIndication or errorStatus:
+                self.t_scan.clearContents()
+                self.update_status('Проверьте что IP-адрес является принтером')
+                return False
+            else:
+                for name, val in varBinds:
+                    if '426' in str(val).lower():
+                        return True
+                self.update_status('Проверьте что IP-адрес является принтером')
+                return False
+        except Exception:
+            self.t_scan.clearContents()
+            self.update_status('Проверьте что IP-адрес является принтером')
+            return False
+
     def clear_all(self):
         """Очистка все полей ввода."""
         self.le_ip_prn.clear()
         self.le_username.clear()
         self.le_ip_arm.clear()
-        self.le_hostname.clear()
+        self.le_name.clear()
         self.le_num.clear()
         self.te_text.clear()
+        self.le_hostname.clear()
         self.le_pref.setText('сканирование')
 
     def open_dialog(self):
@@ -156,7 +194,7 @@ class MainWindow(QMainWindow):
     def is_status_code(self):
         """Проверка доступности принтера."""
         ip = self.le_ip_prn.text()
-        if self.is_valid_ip(ip):
+        if self.is_valid_ip(ip) and self.is_printer(ip):
             try:
                 url = f'http://{ip}'
                 response = requests.get(url, timeout=2)
@@ -183,8 +221,8 @@ class MainWindow(QMainWindow):
     def populate_table(self):
         """Заполнение таблицы данными."""
         try:
-            if self.is_status_code():
-                ip = self.le_ip_prn.text()
+            ip = self.le_ip_prn.text()
+            if self.is_status_code() and self.is_printer(ip):
                 for x in range(1, 21):
                     cnt = 0
                     url = (f'http://{ip}/hp/device/'
@@ -238,7 +276,7 @@ class MainWindow(QMainWindow):
 
                 name = driver.find_element(By.ID, 'displayName')
                 name.clear()
-                name.send_keys(self.le_username.text())
+                name.send_keys(self.le_name.text())
 
                 path = driver.find_element(By.ID, 'networkFolderPath')
                 path.clear()
@@ -330,7 +368,7 @@ class MainWindow(QMainWindow):
                f'set_config_folderAddNew.html?tab=Scan&amp;menu=ScantoCfg')
         self.fill_scan(url)
 
-    def edit_scan(self, test=False):
+    def edit_scan(self):
         """Редактировать запись сканирования."""
         ip = self.le_ip_prn.text()
         num = self.le_num.text()
@@ -339,13 +377,13 @@ class MainWindow(QMainWindow):
         url = (f'http://{ip}/hp/device/'
                f'set_config_folderAddNew.html?tab=Scan&menu='
                f'ScantoCfg?entryNum={num}')
-        self.fill_scan(url, test)
+        self.fill_scan(url)
 
-    def send_clipboard_hostname(self):
+    def send_clipboard_name(self):
         """Команда для настройки сканирования через 'hostname' АРМ."""
         login = self.le_username.text()
-        hostname = self.le_hostname.text()
-        command = (fr"\{hostname}.mosgorzdrav.local\scan\{login}"
+        hostname = self.le_name.text()
+        command = (fr"\\{hostname}.mosgorzdrav.local\scan\{login}"
                    .replace(" ", ""))
         QApplication.clipboard().setText(command)
 
@@ -353,14 +391,14 @@ class MainWindow(QMainWindow):
         """Команда для настройки сканирования через 'ip-адрес' АРМ."""
         login = self.le_username.text()
         ip = self.le_ip_arm.text()
-        command = fr"\{ip}\scan\{login}".replace(" ", "")
+        command = fr"\\{ip}\scan\{login}".replace(" ", "")
         QApplication.clipboard().setText(command)
 
 
 class Dialog(QDialog):
     def __init__(self, parent=None):
         super(Dialog, self).__init__(parent)
-        uic.loadUi('dialog.ui', self)
+        uic.loadUi(r'ui\dialog.ui', self)
         self.main = parent
         self.setWindowFlags(
             self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
