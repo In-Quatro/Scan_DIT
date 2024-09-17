@@ -1,0 +1,814 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>660</width>
+    <height>428</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>660</width>
+    <height>380</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>660</width>
+    <height>428</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Настройка сканирования</string>
+  </property>
+  <property name="animated">
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QTabWidget" name="tabWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>10</y>
+      <width>661</width>
+      <height>391</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="HP">
+     <attribute name="title">
+      <string>HP</string>
+     </attribute>
+     <widget class="QLineEdit" name="le_ip_arm">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>100</y>
+        <width>113</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lpb_dpi">
+      <property name="geometry">
+       <rect>
+        <x>268</x>
+        <y>72</y>
+        <width>71</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Разрещение</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="l_ip_arm">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>102</y>
+        <width>41</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>IP АРМ</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="cb_format">
+      <property name="geometry">
+       <rect>
+        <x>348</x>
+        <y>10</y>
+        <width>69</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>JPEG</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>PDF</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QLineEdit" name="le_hostname">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>130</y>
+        <width>113</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="l_color">
+      <property name="geometry">
+       <rect>
+        <x>268</x>
+        <y>102</y>
+        <width>41</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Цвет</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="cb_dpi">
+      <property name="geometry">
+       <rect>
+        <x>348</x>
+        <y>70</y>
+        <width>111</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>Фото - 150 т/д</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Экран - 75 т/д</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Текст - 300 т/д</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Высота - 600 т/д</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QLabel" name="l_ip_prn">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>12</y>
+        <width>61</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>IP принтера</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="l_format">
+      <property name="geometry">
+       <rect>
+        <x>268</x>
+        <y>12</y>
+        <width>51</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Формат</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="cb_color">
+      <property name="geometry">
+       <rect>
+        <x>348</x>
+        <y>100</y>
+        <width>111</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>Цвет</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Черно-белый</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QPushButton" name="b_test">
+      <property name="geometry">
+       <rect>
+        <x>232</x>
+        <y>160</y>
+        <width>22</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>ArrowCursor</cursorShape>
+      </property>
+      <property name="toolTip">
+       <string>Проверить запись</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/icon_check.png</normaloff>icons/icon_check.png</iconset>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="le_name">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>40</y>
+        <width>113</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="l_size">
+      <property name="geometry">
+       <rect>
+        <x>268</x>
+        <y>42</y>
+        <width>41</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Размер</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="l_hostname">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>132</y>
+        <width>51</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Hostname</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="l_name">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>42</y>
+        <width>71</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Отобр. имя</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="b_create">
+      <property name="geometry">
+       <rect>
+        <x>207</x>
+        <y>160</y>
+        <width>22</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Создать новую запись</string>
+      </property>
+      <property name="whatsThis">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/icon_create.png</normaloff>icons/icon_create.png</iconset>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="cb_size">
+      <property name="geometry">
+       <rect>
+        <x>348</x>
+        <y>40</y>
+        <width>69</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>A4</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Letter</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Legal</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QLineEdit" name="le_ip_prn">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>10</y>
+        <width>113</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="l_pref">
+      <property name="geometry">
+       <rect>
+        <x>268</x>
+        <y>132</y>
+        <width>61</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Имя файла</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="le_pref">
+      <property name="geometry">
+       <rect>
+        <x>348</x>
+        <y>130</y>
+        <width>112</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>сканирование</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="b_clr_le_ip_prn">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>207</x>
+        <y>10</y>
+        <width>22</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/icon_delete.png</normaloff>icons/icon_delete.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="b_clr_le_ip_arm">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>207</x>
+        <y>100</y>
+        <width>22</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/icon_delete.png</normaloff>icons/icon_delete.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="b_copy_ip_path">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>232</x>
+        <y>100</y>
+        <width>22</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/icon_copy.png</normaloff>icons/icon_copy.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="b_clear_le_name">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>207</x>
+        <y>40</y>
+        <width>22</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/icon_delete.png</normaloff>icons/icon_delete.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="b_clr_hostname">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>207</x>
+        <y>130</y>
+        <width>22</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/icon_delete.png</normaloff>icons/icon_delete.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="b_copy_host_path">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>232</x>
+        <y>130</y>
+        <width>22</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/icon_copy.png</normaloff>icons/icon_copy.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="b_check_scan">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>160</y>
+        <width>113</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Посмотреть записи</string>
+      </property>
+     </widget>
+     <widget class="QTableWidget" name="t_scan">
+      <property name="geometry">
+       <rect>
+        <x>7</x>
+        <y>200</y>
+        <width>641</width>
+        <height>161</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>388</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="sizeIncrement">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="baseSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="mouseTracking">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="autoScrollMargin">
+       <number>16</number>
+      </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="gridStyle">
+       <enum>Qt::DotLine</enum>
+      </property>
+      <property name="sortingEnabled">
+       <bool>false</bool>
+      </property>
+      <property name="rowCount">
+       <number>20</number>
+      </property>
+      <property name="columnCount">
+       <number>2</number>
+      </property>
+      <attribute name="horizontalHeaderVisible">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="horizontalHeaderCascadingSectionResizes">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>500</number>
+      </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="horizontalHeaderMinimumSectionSize">
+       <number>39</number>
+      </attribute>
+      <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="horizontalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderVisible">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="verticalHeaderDefaultSectionSize">
+       <number>20</number>
+      </attribute>
+      <attribute name="verticalHeaderMinimumSectionSize">
+       <number>18</number>
+      </attribute>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <column>
+       <property name="text">
+        <string>Отображаемое имя</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Сетевой путь</string>
+       </property>
+      </column>
+      <item row="0" column="0">
+       <property name="font">
+        <font>
+         <pointsize>8</pointsize>
+         <underline>false</underline>
+        </font>
+       </property>
+      </item>
+     </widget>
+     <widget class="QLineEdit" name="le_num">
+      <property name="geometry">
+       <rect>
+        <x>348</x>
+        <y>161</y>
+        <width>41</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="l_scan_num">
+      <property name="geometry">
+       <rect>
+        <x>268</x>
+        <y>162</y>
+        <width>61</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>№ записи</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="b_edit_scan">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>416</x>
+        <y>160</y>
+        <width>22</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/icon_edit.png</normaloff>icons/icon_edit.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="b_del_scan">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>392</x>
+        <y>160</y>
+        <width>22</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/icon_clear.png</normaloff>icons/icon_clear.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="b_new_window">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>440</x>
+        <y>160</y>
+        <width>22</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/icon_settings.png</normaloff>icons/icon_settings.png</iconset>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="te_text">
+      <property name="geometry">
+       <rect>
+        <x>470</x>
+        <y>10</y>
+        <width>171</width>
+        <height>141</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="b_clear_all">
+      <property name="geometry">
+       <rect>
+        <x>470</x>
+        <y>159</y>
+        <width>171</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Очистить все поля</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="le_username">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>70</y>
+        <width>113</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="l_username">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>72</y>
+        <width>71</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Username</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="b_clear_le_username">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>207</x>
+        <y>70</y>
+        <width>22</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/icon_delete.png</normaloff>icons/icon_delete.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="b_set_dns">
+      <property name="geometry">
+       <rect>
+        <x>8</x>
+        <y>160</y>
+        <width>78</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Прописать DNS</string>
+      </property>
+      <property name="text">
+       <string>DNS</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="Pantum">
+     <attribute name="title">
+      <string>Pantum</string>
+     </attribute>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="accessibleName">
+    <string/>
+   </property>
+   <property name="sizeGripEnabled">
+    <bool>true</bool>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

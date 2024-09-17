@@ -1,86 +1,125 @@
 import os
 import re
+import requests
+import sys
 import time
+
 from pysnmp.hlapi import *
 from bs4 import BeautifulSoup
-import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.support.ui import WebDriverWait
-
 from selenium.webdriver.support import expected_conditions as EC
-
-import sys
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QDialog
 from PyQt5 import uic, QtGui
+from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from PyQt5.QtWidgets import (QApplication, QMainWindow,
+                             QTableWidgetItem, QDialog)
+
 
 # Без привязки к версии
-# driver_options = webdriver.ChromeOptions()
-# driver_options.add_argument("--headless")
-# driver = webdriver.Chrome(options=driver_options)
-
+# # driver_options = webdriver.ChromeOptions()
+# # driver_options.add_argument("--headless")
+# # driver = webdriver.Chrome(options=driver_options)
 #
-driver_options = Options()
-driver_options.add_argument("--headless")
-driver_options.add_argument("--disable-blink-features=AutomationControlled")
+# # С привязкой к версии
+# driver_options = Options()
+# driver_options.add_argument("--headless")
+# driver_options.add_argument("--disable-blink-features=AutomationControlled")
+# #
+# # # Отключение автоматической проверки веб-драйвера
+# service = Service(executable_path="webdriver/chromedriver.exe")
+# #
+# # # Создание экземпляра веб-драйвера Chrome с отключенной проверкой
+# driver = webdriver.Chrome(service=service, options=driver_options)
 
-# Отключение автоматической проверки веб-драйвера
-service = Service(executable_path="webdriver/chromedriver.exe")
 
-# Создание экземпляра веб-драйвера Chrome с отключенной проверкой
-driver = webdriver.Chrome(service=service, options=driver_options)
+class ScanThread(QThread):
+    status_update = pyqtSignal(str)
+
+    def __init__(self, ip, num, driver):
+        super().__init__()
+        self.ip = ip
+        self.num = num
+        self.driver = driver
+
+    def run(self):
+        if self.num:
+            url = (f'http://{self.ip}/hp/device/info_ScantoFolder_testStatus.'
+                   f'html?tab=Scan&menu=ScantoCfg?entryNum={self.num}')
+            try:
+                self.driver.get(url=url)
+                self.status_update.emit(
+                    f'Ожидайте, идет проверка записи '
+                    f'"{self.num}", это займет немного времени')
+                time.sleep(10)
+                msg = self.driver.find_element(By.ID, "alertText")
+                text_msg = msg.text.strip('\n')[:84]
+                self.status_update.emit(text_msg)
+            except Exception as e:
+                print(e)
+                self.status_update.emit('Готово')
+        else:
+            self.status_update.emit('Необходимо указать запись для проверки')
 
 
 class MainWindow(QMainWindow):
+    """"Главное окно."""
     def __init__(self):
         super(MainWindow, self).__init__()
-        uic.loadUi(r'ui\scan.ui', self)
-        self.setWindowIcon(QtGui.QIcon(r'ui\icons\logo.ico'))
+        uic.loadUi(self.resource_path(r'ui\main_window.ui'), self)
+        # С привязкой к версии
+        driver_path = self.resource_path("webdriver/chromedriver.exe")
+        service = Service(executable_path=driver_path)
+        driver_options = Options()
+        driver_options.add_argument("--headless")
+        driver_options.add_argument(
+            "--disable-blink-features=AutomationControlled")
+        self.driver = webdriver.Chrome(service=service, options=driver_options)
+
+        # Без привязки к версии
+        # driver_options = webdriver.ChromeOptions()
+        # driver_options.add_argument("--headless")
+        # self.driver = webdriver.Chrome(options=driver_options)
+
+        self.setWindowIcon(QtGui.QIcon(self.resource_path(r'ui\icons\logo.ico')))
         self.t_scan.setColumnWidth(0, 170)
         self.b_clr_le_ip_prn.clicked.connect(self.le_ip_prn.clear)
         self.b_clear_le_username.clicked.connect(self.le_username.clear)
         self.b_clr_le_ip_arm.clicked.connect(self.le_ip_arm.clear)
         self.b_check_scan.clicked.connect(self.check_scan)
-        self.b_save.clicked.connect(self.new_scan)
+        self.b_create.clicked.connect(self.new_scan)
         self.b_test.clicked.connect(self.test_scan)
+        self.b_set_dns.clicked.connect(self.set_dns)
         self.b_del_scan.clicked.connect(self.delete_scan)
         self.b_edit_scan.clicked.connect(self.edit_scan)
-        self.b_new_window.clicked.connect(self.open_dialog)
+        self.b_new_window.clicked.connect(self.open_window_dialog)
         self.b_copy_host_path.clicked.connect(self.send_clipboard_name)
         self.b_copy_ip_path.clicked.connect(self.send_clipboard_ip_arm)
         self.b_clear_le_name.clicked.connect(self.le_name.clear)
         self.b_clr_hostname.clicked.connect(self.le_hostname.clear)
         self.b_clear_all.clicked.connect(self.clear_all)
 
+    def resource_path(self, relative_path):
+        """Получает абсолютный путь к ресурсу,
+        работает как в режиме разработки, так и в скомпилированном виде."""
+        try:
+            # PyInstaller создает временную папку и сохраняет путь к ней
+            # в атрибуте `_MEIPASS`
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath(".")
+        return os.path.join(base_path, relative_path)
+
     def test_scan(self):
         """Проверка записи сканирования."""
         ip = self.le_ip_prn.text()
-        if self.is_status_code():
-            num = self.le_num.text()
-            if num:
-                url = (f'http://{ip}/hp/device/info_ScantoFolder_testStatus.'
-                       f'html?tab=Scan&menu=ScantoCfg?entryNum={num}')
-                try:
-                    driver.get(url=url)
-                    self.update_status(f'Ожидайте, идет проверка записи '
-                                       f'"{num}", это займет 15 секунд')
-                    time.sleep(15)
-                    msg = driver.find_element(By.ID, "alertText")
-                    text_msg = msg.text.strip('\n')[:84]
-                    self.update_status(text_msg)
-                except Exception as e:
-                    print(e)
-                    self.populate_table()
-                    self.update_status('Готово')
-                finally:
-                    self.populate_table()
-            else:
-                self.update_status('Необходимо указать запись '
-                                   'для проверки')
+        num = self.le_num.text()
+        self.scan_thread = ScanThread(ip, num, self.driver)
+        self.scan_thread.status_update.connect(self.update_status)
+        self.scan_thread.start()
 
     def is_printer(self, ip):
         """Проверка IP на принтер."""
@@ -99,7 +138,7 @@ class MainWindow(QMainWindow):
                 return False
             else:
                 for name, val in varBinds:
-                    if '426' in str(val).lower():
+                    if 'HP LaserJet MFP M426' in str(val):
                         return True
                 self.update_status('Проверьте что IP-адрес является принтером')
                 return False
@@ -110,20 +149,55 @@ class MainWindow(QMainWindow):
 
     def clear_all(self):
         """Очистка все полей ввода."""
-        self.le_ip_prn.clear()
-        self.le_username.clear()
-        self.le_ip_arm.clear()
-        self.le_name.clear()
-        self.le_num.clear()
-        self.te_text.clear()
-        self.le_hostname.clear()
+        fields_to_clear = [
+            self.le_ip_prn,
+            self.le_username,
+            self.le_ip_arm,
+            self.le_name,
+            self.le_num,
+            self.te_text,
+            self.le_hostname
+        ]
+
+        for field in fields_to_clear:
+            if hasattr(field, 'clear'):
+                field.clear()
+
         self.le_pref.setText('сканирование')
 
-    def open_dialog(self):
+    def open_window_dialog(self):
         """Открыть новое окно с настройками поля сканирования."""
         try:
-            dialog = Dialog(self)
+            dialog = Dialog(parent=self, resource_path=self.resource_path)
             dialog.show()
+        except Exception as e:
+            print(e)
+
+    def set_dns(self):
+        """Установить DNS сервер."""
+        try:
+            if self.is_status_code():
+                self.update_status('Начался процесс изменения DNS-сервера')
+                ip = self.le_ip_prn.text()
+                'http://192.168.35.149/set_config_netIdentification.html?tab=Networking&menu=NetIdent'
+                url = (f'http://{ip}/hp/device/set_config_netIdentification.'
+                       f'html?tab=Networking&menu=NetIdent')
+                self.driver.get(url=url)
+
+                dns_primary = self.driver.find_element(By.ID, 'DNSPrimaryV4')
+                dns_primary.clear()
+                dns_primary.send_keys('10.0.4.14')
+
+                dns_secondary = self.driver.find_element(By.ID, 'DNSSecV4')
+                dns_secondary.clear()
+                dns_secondary.send_keys('10.0.4.15')
+
+                b_apply = self.driver.find_element(By.ID, 'apply_button')
+                b_apply.click()
+
+                alert = Alert(self.driver)
+                alert.accept()
+                self.update_status('DNS-сервер успешно изменен')
         except Exception as e:
             print(e)
 
@@ -169,10 +243,9 @@ class MainWindow(QMainWindow):
             else:
                 self.update_status('Ошибка. Введите номер существующей'
                                    ' записи сканирования')
-        except Exception as e:
+        except Exception:
             self.update_status('Ошибка. Введите номер существующей'
                                ' записи сканирования')
-            print(e)
 
     def update_status(self, msg):
         """Изменение сообщения статусбара."""
@@ -222,12 +295,12 @@ class MainWindow(QMainWindow):
         """Заполнение таблицы данными."""
         try:
             ip = self.le_ip_prn.text()
-            if self.is_status_code() and self.is_printer(ip):
-                for x in range(1, 21):
+            if self.is_status_code():
+                for num in range(1, 21):
                     cnt = 0
                     url = (f'http://{ip}/hp/device/'
                            f'set_config_folderAddNew.html?tab=Scan&menu='
-                           f'ScantoCfg?entryNum={x}')
+                           f'ScantoCfg?entryNum={num}')
                     response = requests.get(url)
                     html_content = response.text
                     soup = BeautifulSoup(html_content, 'lxml')
@@ -238,48 +311,55 @@ class MainWindow(QMainWindow):
                     folder = soup.find(
                         'input', {'id': 'networkFolderPath'}).get('value')
 
-                    self.t_scan.setItem(x - 1, cnt, QTableWidgetItem(name))
-                    self.t_scan.setItem(x - 1, cnt + 1, QTableWidgetItem(folder))
+                    self.t_scan.setItem(
+                        num - 1, cnt, QTableWidgetItem(name))
+                    self.t_scan.setItem(
+                        num - 1, cnt + 1, QTableWidgetItem(folder))
             else:
                 self.t_scan.clearContents()
         except Exception as e:
             self.update_status(e)
 
     def save_button(self):
-        """Действие кнопки 'Только сохранить.'"""
+        """Действие кнопки 'Создать'."""
         try:
-            name_ = WebDriverWait(driver, 1).until(
-                EC.presence_of_element_located(
-                    (By.ID, "displayNameError"))
+            # Проверка наличия ошибки в названии
+            name_error = WebDriverWait(self.driver, 1).until(
+                EC.presence_of_element_located((By.ID, "displayNameError"))
             )
-            text_name = name_.text
-            folder_ = WebDriverWait(driver, 1).until(
-                EC.presence_of_element_located(
-                    (By.ID, "networkPathError"))
+            text_name_error = name_error.text
+
+            # Проверка наличия ошибки в пути
+            folder_error = WebDriverWait(self.driver, 1).until(
+                EC.presence_of_element_located((By.ID, "networkPathError"))
             )
-            text_folder = folder_.text
-            if text_name:
-                self.update_status(f'Ошибка названия: {text_name}')
-            elif text_folder:
-                self.update_status(f'Ошибка пути: {text_folder}')
+            text_folder_error = folder_error.text
+
+            # Обработка ошибок
+            if text_name_error:
+                self.update_status(f'Ошибка названия: {text_name_error}')
+            elif text_folder_error:
+                self.update_status(f'Ошибка пути: {text_folder_error}')
+            else:
+                self.populate_table()
+                self.update_status('Готово')
         except Exception:
             self.populate_table()
             self.update_status('Готово')
-        finally:
-            self.populate_table()
 
     def fill_scan(self, url):
         """Внесение данных для сканирования."""
         try:
             if self.is_status_code():
-                driver.get(url=url)
+                self.driver.get(url=url)
 
-                name = driver.find_element(By.ID, 'displayName')
+                name = self.driver.find_element(By.ID, 'displayName')
                 name.clear()
                 name.send_keys(self.le_name.text())
 
-                path = driver.find_element(By.ID, 'networkFolderPath')
+                path = self.driver.find_element(By.ID, 'networkFolderPath')
                 path.clear()
+
                 hostname = self.le_hostname.text()
                 username = self.le_username.text()
                 ip = self.le_ip_arm.text()
@@ -289,31 +369,31 @@ class MainWindow(QMainWindow):
                     path.send_keys(fr'\\{hostname + ".mosgorzdrav.local"}'
                                    fr'\scan\{username}')
 
-                login = driver.find_element(By.ID, 'UserName')
+                login = self.driver.find_element(By.ID, 'UserName')
                 login.clear()
                 login.send_keys('scan')
 
-                password = driver.find_element(By.ID, 'PassWord')
+                password = self.driver.find_element(By.ID, 'PassWord')
                 password.clear()
                 password.send_keys('ol23lrm')
 
-                f_type = driver.find_element(By.ID, 'fileType')
+                f_type = self.driver.find_element(By.ID, 'fileType')
                 f_type.send_keys(self.cb_format.currentText())
 
-                size = driver.find_element(By.ID, 'DefaultPaperSize')
+                size = self.driver.find_element(By.ID, 'DefaultPaperSize')
                 size.send_keys(self.cb_size.currentText())
 
-                dpi = driver.find_element(By.ID, 'ScanQualitySelection')
+                dpi = self.driver.find_element(By.ID, 'ScanQualitySelection')
                 dpi.send_keys(self.cb_dpi.currentText())
 
-                color = driver.find_element(By.ID, 'scanColorSelection')
+                color = self.driver.find_element(By.ID, 'scanColorSelection')
                 color.send_keys(self.cb_color.currentText())
 
-                pref = driver.find_element(By.ID, 'filePrefix')
+                pref = self.driver.find_element(By.ID, 'filePrefix')
                 pref.clear()
                 pref.send_keys(self.le_pref.text())
 
-                save = driver.find_element(By.ID, 'Save_button')
+                save = self.driver.find_element(By.ID, 'Save_button')
                 save.click()
                 self.save_button()
         except Exception as e:
@@ -327,21 +407,21 @@ class MainWindow(QMainWindow):
                 url = (f'http://{ip}/hp/device/'
                        f'set_config_scantoConfiguration.html?tab=Scan&amp;'
                        f'menu=ScantoCfg')
-                driver.get(url=url)
+                self.driver.get(url=url)
                 num = self.le_num.text()
                 if num:
                     self.update_status(f'Ожидайте, удаляю запись'
                                        f'"{num}" сканирования...')
 
-                    check_box = driver.find_element(
+                    check_box = self.driver.find_element(
                         By.NAME, f'1.{int(num) - 1}.20.Select_Entry')
                     check_box.click()
 
-                    b_delete = driver.find_element(
+                    b_delete = self.driver.find_element(
                         By.ID, 'Delete_Button')
                     b_delete.click()
 
-                    alert = Alert(driver)
+                    alert = Alert(self.driver)
                     alert.accept()
 
                     self.populate_table()
@@ -396,9 +476,11 @@ class MainWindow(QMainWindow):
 
 
 class Dialog(QDialog):
-    def __init__(self, parent=None):
+    """Диалоговое окно."""
+    def __init__(self, parent=None, resource_path=None):
         super(Dialog, self).__init__(parent)
-        uic.loadUi(r'ui\dialog.ui', self)
+        self.resource_path = resource_path
+        uic.loadUi(resource_path(r'ui\settings.ui'), self)
         self.main = parent
         self.setWindowFlags(
             self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
